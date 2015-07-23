@@ -1,0 +1,272 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Andre Haas - A*</title>
+    <style>
+      html, input {
+          font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+      .container {
+        margin: 0 auto;
+        text-align: center;
+      }
+      .canvas-container {
+        width: 800px;
+        height: 600px;
+      }
+      .small {
+        font-size: 8pt;
+      }
+    </style>
+  </head>
+  <body onLoad=initialize()>
+    <div id="outer" style="width:100%">  
+      <div class="container"> 
+        <h1>A*</h1>
+        <p class="small">(<a href="http://en.wikipedia.org/wiki/A*" target="_blank">What is A*?</a>)</p>
+        <p>
+          1. Click and drag to plant saplings onto the grass.<br>
+          2. Press <i>Begin</i> to run the algorithm!<br>
+        </p>
+        <button type="button" onclick="reset()">Reset</button>
+        <button id="randombtn" type="button" onclick="plantRandom()">Plant Randomly</button>
+        <button id="beginbtn" type="button" onclick="begin()">Begin ></button>
+      </div>
+      <br>
+      <div class="container canvas-container">
+        <canvas id="myCanvas" width="800" height="480"></canvas></div>
+      </div>
+    </div>
+
+    <script src="lib.js"></script>
+    <script defer="defer">
+      var HEIGHT = 30;
+      var WIDTH = 50;
+      var start = [10, 15];
+      var end = [40, 15];
+      var canvas = document.getElementById('myCanvas');
+      var context = canvas.getContext('2d');
+      var images = {};
+      var trees = {};
+      var prohibited = [start, [start[0], start[1]-1], [start[0], start[1]+1], end];
+      var prohibitedObj = [makePos(start[0], start[1]), makePos(start[0], start[1]-1), makePos(start[0], start[1]+1), end];
+      var drawMode = true;
+      var mousepos;
+
+      function initialize() {
+        canvas.addEventListener("mousedown", doMouseDown, false);
+        document.onmousemove = function(evt) {
+          mousepos = getMousePos(evt);
+        }
+      }
+
+      function getTree(x, y){
+        //gets whether we have a tree in the grid
+        if (trees[x]==null) return false;
+        if (trees[x][y]==null) return false;
+        return true;
+      }
+      function addTree(x, y){
+        if (trees[x]==null) trees[x]=[];
+        trees[x][y]=true;
+      }
+
+      function doMouseDown(event) {
+        //alert(getMousePos(event).x + ", " + getMousePos(event).y);
+        if (!drawMode) return;
+        var pos = getMousePos(event);
+        clickDraw(pos);
+      }
+
+      function clickDraw(pos, suppress) {
+        if (!drawMode) return;
+        if (!pos) pos = mousepos;
+        var x = (pos.x-pos.x%16)/16;
+        var y = (pos.y-pos.y%16)/16;
+        for (var i=0; i<prohibited.length; i++){
+          if (prohibited[i][0]==x && prohibited[i][1]==y) {
+            //if (!suppress) alert("Cannot plant tree at start or end.");
+            return;
+          }
+        }
+        context.drawImage(images.grass1, x*16, y*16, 16, 16);
+        context.drawImage(images.sapling, x*16, y*16-3, 16, 19);
+        if (getTree(x, y+1)) context.drawImage(images.sapling_of, x*16, y*16+13, 16, 3);
+        addTree(x, y);        
+      }
+
+      var mouseDown = false;
+      document.body.onmousedown = function() { 
+        mouseDown = true;
+      }
+      document.body.onmouseup = function() {
+        mouseDown = false;
+      }
+
+      window.setInterval(function() {if (mouseDown) clickDraw();}, 1);
+
+      var sources = {
+        grass1: 'i/grass1.png',
+        grass2: 'i/grass2.png',
+        grassy1: 'i/grassy1.png',
+        grassy2: 'i/grassy2.png',
+        flower1: 'i/flower1.png',
+        flower2: 'i/flower2.png',
+        flower3: 'i/flower3.png',
+        tuft: 'i/tuft.png',
+        sapling: 'i/sapling.png',
+        sapling_of: 'i/sapling_of.png',
+        pokeball: 'i/pokeball.png',
+        ash: 'i/ash.png',
+        shadow: 'i/shadow.png',
+        marker_red: 'i/marker_red.png',
+        marker_blu: 'i/marker_blu.png'
+      };
+
+      function drawBeginEnd() {
+        context.drawImage(images.ash, start[0]*16, start[1]*16-2, 16, 18);
+        context.drawImage(images.pokeball, end[0]*16, end[1]*16, 16, 16);
+      }
+
+      function drawBeginEndShadow() {
+        //context.drawImage(images.grass1, start[0]*16, start[1]*16, 16, 16);
+        context.drawImage(images.shadow, start[0]*16, start[1]*16+3, 13, 13);
+      }
+
+      function reset() {
+        trees=[];
+        drawMode=true;
+        for(var i=0; i<WIDTH; i++){
+          for(var j=0; j<HEIGHT; j++){
+            var img = "";
+            if (Math.random() > 0.9) {
+              if (Math.random() > 0.5) img="grassy1"; else img="grassy2";             
+            } else {
+              if (Math.random() > 0.5) img="grass1"; else img="grass2";
+            }
+            context.drawImage(images[img], i*16, j*16, 16, 16);
+
+          }
+        }
+        for(var i=0; i<50; i++){
+          for(var j=0; j<30; j++){
+            var img = "";
+            if (Math.random() > 0.997) img="flower1";             
+            else if (Math.random() > 0.997) img="flower2"; 
+            else if (Math.random() > 0.99) img="flower3"; 
+            //else if (Math.random() > 0.995) img="tuft"; 
+            if (img != "") context.drawImage(images[img], i*16, j*16, 16, 16);
+          }
+        }
+        drawBeginEndShadow()
+        drawBeginEnd();        
+        document.getElementById("beginbtn").disabled = false;
+        document.getElementById("randombtn").disabled = false;
+      }
+
+      function plantRandom() {
+        for(var i=0; i<50; i++){
+          for(var j=0; j<30; j++){
+            if (Math.random() > 0.9) clickDraw(makePos(i*16, j*16), true);
+          }
+        }
+      }
+
+      images = loadImages(sources, function() {
+        reset();
+      });
+
+      function drawTile(img, pos) {
+        context.drawImage(images.grass1, pos.x*16, pos.y*16, 16, 16);
+        context.drawImage(images[img], pos.x*16, pos.y*16, 16, 16);
+        if (posEquals(pos, {x: start[0], y: start[1]})) drawBeginEndShadow();
+        if (posInArray(prohibitedObj, pos)) drawBeginEnd();
+        if (getTree(pos.x, pos.y+1)) context.drawImage(images.sapling_of, pos.x*16, pos.y*16+13, 16, 3);
+      }
+
+      var came_from = [];
+      function setCameFrom(node, from) {
+        if (!came_from[node.x]) came_from[node.x]=[];
+        came_from[node.x][node.y]=from;
+      }
+      function getCameFrom(node) {
+        return came_from[node.x][node.y];
+      }
+
+      function mhtn(n1, n2) {
+        //Manhattan heuristic
+        return (Math.abs(n1.x - n2.x)*2 + Math.abs(n1.y - n2.y))*1.5;
+      }
+
+      var heur = mhtn;
+
+      function fail() {
+        alert("No solution!");
+      }
+
+      function begin() {
+        document.getElementById("beginbtn").disabled = true;
+        document.getElementById("randombtn").disabled = true;
+        //begin A* search
+        drawMode = false;
+        var startObj = {x: start[0], y: start[1]};
+        var endObj = {x: end[0], y: end[1]};
+        var closedset = [];
+        var openset = [startObj];
+        var came_from = initGrid(WIDTH, HEIGHT);
+        var g_score = initGrid(WIDTH, HEIGHT);
+        var f_score = initGrid(WIDTH, HEIGHT);
+        setGrid(g_score, startObj, 0);
+        setGrid(f_score, startObj, heur(startObj, endObj));
+
+        var deleted = 0; // track real openset size
+        function iter() {
+          if (drawMode) return;
+          var current = getGridMinNode(maskGrid(f_score, openset));
+          if (posEquals(current, endObj)) return reconstruct(came_from, endObj);
+
+          openset = delPosFromArray(openset, current);
+          deleted++;
+          closedset.push(current);
+          drawTile("marker_red", current);
+
+          var neighbors = getNeighbors(current, trees, WIDTH, HEIGHT);
+          for (i=0; i<neighbors.length; i++) {
+            var n = neighbors[i];
+            tentative_g_score = getGrid(g_score, current) + 1;
+            if (posInArray(closedset, n) && (tentative_g_score >= getGrid(g_score, n))) continue;
+            if (!posInArray(openset, n) || (tentative_g_score < getGrid(g_score, n))) {
+              setGrid(came_from, n, current);
+              setGrid(g_score, n, tentative_g_score);
+              setGrid(f_score, n, tentative_g_score + heur(n, endObj));
+              context.fillStyle = '#B8FFA6';
+              context.font = '7pt courier';
+              context.textBaseline = 'bottom';
+              context.fillText(Math.floor(tentative_g_score + heur(n, endObj)), n.x*16+3, n.y*16+14);
+              if (!posInArray(openset, n)) openset.push(n);
+            }
+          }
+          if (openset.length == deleted) {
+            return fail();
+          }
+          window.setTimeout(iter, 10);
+        }
+        iter();
+      }
+
+      function reconstruct(came_from, n) {
+        drawTile("marker_blu", n);
+        if (getGrid(came_from, n)) reconstruct(came_from, getGrid(came_from, n));
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
