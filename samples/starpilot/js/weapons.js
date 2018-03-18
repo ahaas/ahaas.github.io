@@ -3,7 +3,7 @@ WEAPONS = {}
 {
 
 const CANNON_DELAY = 0.25;
-const MISS_TRAVEL = 2000;  // distance of missed shots
+const MISS_TRAVEL = 4000;  // distance of missed shots
 
 WEAPONS.update = (delta, scene) => {
   const localSC = LEVEL.localSpaceCraft;

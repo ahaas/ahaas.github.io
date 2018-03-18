@@ -12,10 +12,10 @@ const skyGeometry = new THREE.CubeGeometry(s, s, s);
 const materialArray = [];
 for (let i = 0; i < 6; i++) {
   loader.load(imagePrefix + directions[i] + imageSuffix, (texture) => {
-    materialArray.push( new THREE.MeshBasicMaterial({
+    materialArray[i] = new THREE.MeshBasicMaterial({
       map: texture,
       side: THREE.BackSide
-    }));
+    });
   });
 }
 

@@ -72,9 +72,6 @@ const onResize = () => {
 window.addEventListener('resize', onResize, false);
 onResize();
 
-//
-
-scene.add(new THREE.AxesHelper(100));
 
 // Lights
 const ambient = new THREE.AmbientLight(0x333333);
