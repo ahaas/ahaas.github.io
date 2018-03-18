@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Outer Space Demo</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { width: 100%; height: 100%; }
+    .hud {
+        color: white;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        position: absolute;
+        padding: 10px 20px;
+        bottom: 0;
+        font-size: 30px;
+        font-family: helvetica, sans-serif;
+        box-sizing: border-box;
+        /* text-transform: uppercase; */
+        text-shadow: 0 0 2px black;
+        /* transform: scale(1, 1); */
+        letter-spacing: 2px;
+        align-items: flex-end;
+    }
+    .crosshair {
+      position: absolute;
+      display: block;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.5;
+    }
+    .health {
+      text-align: right;
+    }
+    .friendlies {
+      color: #88AAFF;
+    }
+    .enemies {
+      color: #FF9999;
+    }
+    .menu {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .title {
+      font-family: helvetica, sans-serif;
+      font-size: 55px;
+      color: white;
+      font-style: bold;
+      padding-bottom: 20px;
+    }
+    .menu button {
+      background-color: #151540;
+      color: white;
+      padding: 12px 20px;
+      margin: 12px;
+      font-size: 20px;
+      border: 0;
+      width: 200px;
+    }
+    .menu button:hover {
+      background-color: #222266;
+      padding: 12px 25px;
+      border: 0;
+    }
+    #tutorial {
+      text-align: center;
+      color: white;
+      font-family: helvetica, sans-serif;
+      font-size: 30px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 20%;
+      display: none;
+      align-items: center;
+      z-index: 500;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="menu" id="menu">
+    <div class="title" id="title">StarPilot</div>
+    <button id="stage0">Stage 0: Tutorial</button>
+    <button id="stage1">Stage 1: Skirmish</button>
+    <button id="stage2">Stage 2: Battle</button>
+  </div>
+  <div id="tutorial">
+    WASD(QE): Rotate<br>
+    Shift/Space: Thrust<br>
+    Click+drag: Camera<br>
+    Escape: Menu
+  </div>
+  <script src="js/lib/Three.js"></script>
+  <script src="js/lib/OrbitControls.js"></script>
+  <script src="js/lib/OBJLoader.js"></script>
+  <script src="js/lib/stats.min.js"></script>
+
+  <script src="js/random.js"></script>
+  <script src="js/level.js"></script>
+  <script src="js/asteroids.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/controls.js"></script>
+  <script src="js/skybox.js"></script>
+  <script src="js/spacecraft.js"></script>
+  <script src="js/spacecraft_trails.js"></script>
+  <script src="js/spacecraft_ai.js"></script>
+  <script src="js/weapons.js"></script>
+  <script src="js/projectiles.js"></script>
+  <script src="js/vfx.js"></script>
+  <script src="js/soundfx.js"></script>
+  <script src="js/hud.js"></script>
+  <script src="js/main.js"></script>
+
+  <script src="js/menu.js"></script>
+</body>
+
+</html>
