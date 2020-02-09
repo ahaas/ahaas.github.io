@@ -65,8 +65,8 @@ const datumInfo = d3.select('#datum-info');
 function handleDataMouseOver(d) {
   datumInfo
       .style('display', 'block')
-      .style('left', d3.event.pageX + 'px')
-      .style('top', d3.event.pageY + 'px')
+      .style('left', (d3.event.pageX+10) + 'px')
+      .style('top', (d3.event.pageY+10) + 'px')
       .html([
         d.Name,
         'Address: ' + d.Address,

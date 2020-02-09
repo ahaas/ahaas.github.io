@@ -115,3 +115,7 @@ label[for="Radius B"] {
 #instructions {
   padding-top: 10px;
 }
+#title {
+  font-size: 20px;
+  padding-bottom: 15px;
+}
